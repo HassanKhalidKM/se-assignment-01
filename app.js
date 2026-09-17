@@ -20,6 +20,8 @@ var clearBtn       = document.getElementById('clear-completed-btn');
 var filterBtns     = document.querySelectorAll('.filter-btn');
 
 /* ─── Persistence ────────────────────────────────────────────────────────── */
+// BUG: intentional syntax error for CI failure demo
+var broken = (;
 function loadTasks() {
   var stored = localStorage.getItem(STORAGE_KEY);
   if (stored) {
