@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="TaskFlow — A simple and elegant task manager" />
+    <title>TaskFlow | Task Manager</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="app-wrapper">
+      <!-- Header -->
+      <header class="app-header">
+        <div class="header-content">
+          <div class="logo">
+            <span class="logo-icon" aria-hidden="true">✓</span>
+            <h1 class="logo-text">TaskFlow</h1>
+          </div>
+          <div class="stats-badge">
+            <span id="pending-count">0</span>
+            <span class="stats-label">pending</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="app-main">
+        <!-- Input Section -->
+        <section class="input-section" aria-label="Add new task">
+          <form id="task-form" class="task-form">
+            <div class="input-wrapper">
+              <span class="input-icon" aria-hidden="true">+</span>
+              <input
+                type="text"
+                id="task-input"
+                class="task-input"
+                placeholder="Add a new task..."
+                maxlength="120"
+                autocomplete="off"
+                aria-label="New task description"
+                required
+              />
+              <button type="submit" class="add-btn" aria-label="Add task">
+                Add
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <!-- Filter Tabs -->
+        <nav class="filter-nav" aria-label="Filter tasks">
+          <button class="filter-btn active" data-filter="all" aria-pressed="true">
+            All
+          </button>
+          <button class="filter-btn" data-filter="active" aria-pressed="false">
+            Active
+          </button>
+          <button class="filter-btn" data-filter="completed" aria-pressed="false">
+            Completed
+          </button>
+        </nav>
+
+        <!-- Task List -->
+        <section class="task-section" aria-label="Task list">
+          <ul id="task-list" class="task-list" role="list" aria-live="polite" aria-label="Tasks"></ul>
+
+          <!-- Empty State -->
+          <div id="empty-state" class="empty-state" role="status" aria-live="polite">
+            <div class="empty-icon" aria-hidden="true">📋</div>
+            <p class="empty-title">No tasks yet</p>
+            <p class="empty-subtitle">Add your first task above to get started!</p>
+          </div>
+        </section>
+
+        <!-- Footer Actions -->
+        <footer class="task-footer">
+          <span id="task-count-label" class="count-label" aria-live="polite">0 tasks</span>
+          <button id="clear-completed-btn" class="clear-btn" aria-label="Clear all completed tasks">
+            Clear Completed
+          </button>
+        </footer>
+      </main>
+
+      <!-- App Footer -->
+      <footer class="app-footer">
+        <p>Built by <strong>Muhammad Hassan Khalid</strong> &mdash; FA25-BCS-132</p>
+      </footer>
+    </div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
