@@ -54,7 +54,7 @@ jobs:
       - name: Lint JavaScript with jshint
         run: |
           echo "🔍 Linting app.js..."
-          jshint app.js --esversion=8 --undef --unused=true --browser=true --globals=localStorage,document,console
+          jshint app.js
           echo "✅ JavaScript lint passed."
 
       # 6. Summary

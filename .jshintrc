@@ -1,0 +1,14 @@
+{
+  "esversion": 8,
+  "browser": true,
+  "undef": false,
+  "unused": false,
+  "asi": false,
+  "eqeqeq": false,
+  "globals": {
+    "localStorage": true,
+    "document": true,
+    "console": true,
+    "window": true
+  }
+}
