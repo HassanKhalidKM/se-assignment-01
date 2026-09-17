@@ -128,13 +128,20 @@ The deployment workflow at `.github/workflows/deploy.yml` runs automatically aft
 
 ## 6. Screenshots
 
-| Screenshot | Description |
-|---|---|
-| `screenshots/app_local.png` | App running locally in browser |
-| `screenshots/ci_failed.png` | GitHub Actions — failed run (broken JS) |
-| `screenshots/ci_success.png` | GitHub Actions — successful run (fixed) |
-| `screenshots/pages_live.png` | Live app on GitHub Pages |
-| `screenshots/commits.png` | GitHub commit history showing 3+ commits |
+### Local Application Execution
+![Local Application Execution](../screenshots/app_local.png)
+
+### Git Commit History (3+ Meaningful Commits)
+![Git Commit History](../screenshots/commits.png)
+
+### CI Pipeline Failure (Intentional Error Demonstration)
+![CI Pipeline Failure](../screenshots/ci_failed.png)
+
+### CI Pipeline Success (Fixed Workflow)
+![CI Pipeline Success](../screenshots/ci_success.png)
+
+### GitHub Pages Live Deployment
+![GitHub Pages Live Deployment](../screenshots/pages_live.png)
 
 ---
 
