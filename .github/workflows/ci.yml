@@ -1,0 +1,69 @@
+name: CI — Build & Test
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    name: Validate & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Checkout source code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 2. Check that all required files are present
+      - name: Check required files exist
+        run: |
+          echo "🔍 Checking required project files..."
+          test -f index.html && echo "✅ index.html found" || (echo "❌ index.html missing" && exit 1)
+          test -f style.css  && echo "✅ style.css found"  || (echo "❌ style.css missing"  && exit 1)
+          test -f app.js     && echo "✅ app.js found"     || (echo "❌ app.js missing"     && exit 1)
+          test -f README.md  && echo "✅ README.md found"  || (echo "❌ README.md missing"  && exit 1)
+          echo "✅ All required files present."
+
+      # 3. Validate HTML5
+      - name: Set up Python for HTML validation
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install html5validator
+        run: pip install html5validator
+
+      - name: Validate HTML5
+        run: |
+          echo "🔍 Validating HTML5..."
+          html5validator --root . --match "*.html" --log INFO
+          echo "✅ HTML5 validation passed."
+
+      # 4. Set up Node.js for JS linting
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install jshint
+        run: npm install -g jshint
+
+      # 5. Lint JavaScript
+      - name: Lint JavaScript with jshint
+        run: |
+          echo "🔍 Linting app.js..."
+          jshint app.js --esversion=8 --undef --unused=true --browser=true --globals=localStorage,document,console
+          echo "✅ JavaScript lint passed."
+
+      # 6. Summary
+      - name: Print success summary
+        run: |
+          echo ""
+          echo "════════════════════════════════"
+          echo "  🎉 All checks passed!"
+          echo "  ✅ Files present"
+          echo "  ✅ HTML5 valid"
+          echo "  ✅ JS lint clean"
+          echo "════════════════════════════════"
