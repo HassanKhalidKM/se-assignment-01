@@ -1,167 +1,131 @@
-# SE Assignment 01 — Report
-## CI/CD Pipeline with GitHub Actions
+# Assignment 01 — Build and Deploy a Small Application
+## Software Engineering (DevOps & CI/CD)
 
-| | |
+| Field | Detail |
 |---|---|
-| **Student** | Muhammad Hassan Khalid |
-| **Roll No.** | FA25-BCS-132 |
-| **Subject** | Software Engineering |
-| **Assignment** | 01 — Build, Commit, CI/CD, Deploy |
-| **Repository** | https://github.com/HassanKhalidKM/se-assignment-01 |
-| **Live App** | https://hassankhalidkm.github.io/se-assignment-01/ |
-| **Date** | September 2026 |
+| **Student Name** | Muhammad Hassan Khalid |
+| **Roll Number** | FA25-BCS-132 |
+| **Assignment** | Assignment 01: Build and Deploy a Small Application |
+| **Course** | Software Engineering |
+| **GitHub Repository** | [https://github.com/HassanKhalidKM/se-assignment-01](https://github.com/HassanKhalidKM/se-assignment-01) |
+| **Live Deployed App** | [https://hassankhalidkm.github.io/se-assignment-01/](https://hassankhalidkm.github.io/se-assignment-01/) |
 
 ---
 
-## 1. Application Overview
+## 1. Application Name and Purpose
 
-**TaskFlow** is a single-page Task Manager web application built with pure HTML5, CSS3, and Vanilla JavaScript — no frameworks or external dependencies.
-
-### Features
-- Add, complete, and delete tasks
-- Filter tasks by status (All / Active / Completed)
-- Persistent storage using the browser's `localStorage` API
-- Live pending-task badge in the header
-- Accessible markup with ARIA roles and labels
-- Fully responsive (mobile + desktop)
-
-### Design Decisions
-- **No framework** chosen intentionally — keeps the CI pipeline simple and demonstrates core web skills
-- **Dark theme** using CSS custom properties for easy theming
-- **ES5-compatible JS** (with some ES6 features) to satisfy `jshint --esversion=8`
+- **Application Name:** TaskFlow
+- **Category:** To-Do List Application (Option 1 from assignment sheet)
+- **Purpose:**  
+  TaskFlow is a client-side productivity tool designed to help users organize, prioritize, and monitor their daily tasks and activities. It operates with zero third-party dependencies using pure modern web standards, providing instant startup, high accessibility, responsive design, and persistence across browser sessions.
 
 ---
 
-## 2. Git Workflow & Commit History
+## 2. Main Features
 
-Three meaningful commits were made following conventional commit style:
-
-| # | Commit Message | What Changed |
-|---|---|---|
-| 1 | `feat: initial project structure` | `index.html` skeleton + `README.md` |
-| 2 | `feat: add task manager core logic` | `app.js` — CRUD, localStorage, filtering |
-| 3 | `fix: improve UI design and accessibility` | `style.css` — full design, ARIA, responsive |
-
-Each commit represents a logical, independently reviewable unit of work.
+- **Task Creation:** Add tasks instantly via input field and `Enter` key or `Add` button.
+- **Task Completion Toggle:** Mark tasks as completed or active with animated visual strike-through.
+- **Task Deletion:** Delete individual tasks or bulk-clear completed tasks.
+- **Filter Views:** Filter tasks dynamically by **All**, **Active**, or **Completed** tabs.
+- **Persistent Storage:** Synchronizes with browser `localStorage` so tasks remain saved upon page reload or browser restart.
+- **Real-time Metrics:** Live badge count displaying remaining active tasks in the header.
+- **Accessibility & Responsiveness:** Built using semantic HTML5 elements, ARIA attributes (`aria-label`, `aria-pressed`, `aria-live`), and fully fluid CSS for desktop and mobile displays.
 
 ---
 
-## 3. GitHub Actions CI Pipeline
+## 3. DevOps Flow Followed
 
-The CI workflow lives at `.github/workflows/ci.yml` and runs automatically on every push to `main` and every pull request targeting `main`.
+The project implemented an automated end-to-end DevOps pipeline through GitHub:
 
-### Pipeline Steps
+![DevOps Flow Diagram](devops_flow_diagram.png)
 
-```
-push to main
-     │
-     ▼
-┌─────────────────────────────────┐
-│   CI — Build & Test             │
-│                                 │
-│  1. Checkout repository         │
-│  2. Check required files exist  │
-│     - index.html ✓              │
-│     - style.css  ✓              │
-│     - app.js     ✓              │
-│     - README.md  ✓              │
-│  3. Validate HTML5              │
-│     (html5validator via pip)    │
-│  4. Lint JavaScript             │
-│     (jshint via npm)            │
-│  5. Print success summary       │
-└─────────────────────────────────┘
-     │
-     ▼ (if on main branch)
-┌─────────────────────────────────┐
-│   Deploy — GitHub Pages         │
-│                                 │
-│  1. Checkout repository         │
-│  2. Configure Pages             │
-│  3. Upload site artifact        │
-│  4. Deploy to Pages             │
-└─────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph Local_Development ["1. Local Development & Testing"]
+        A["Write HTML5, CSS3, Vanilla JS"] --> B["Test Locally in Browser"]
+        B --> C["Git Commits: Structure -> Feature -> Design/CI"]
+    end
+
+    subgraph GitHub_Remote ["2. GitHub Repository"]
+        C -- "git push origin main" --> D["Remote main branch"]
+    end
+
+    subgraph GitHub_Actions_CI ["3. CI Workflow (.github/workflows/ci.yml)"]
+        D -- "Triggers on push" --> E["Checkout Repository"]
+        E --> F["Check Required Files Exist"]
+        F --> G["Validate HTML5 Standards"]
+        G --> H["Lint JavaScript (JSHint)"]
+    end
+
+    subgraph GitHub_Pages_CD ["4. CD Workflow (.github/workflows/deploy.yml)"]
+        H -- "If CI Passes" --> I["Upload Pages Artifact"]
+        I --> J["Deploy to GitHub Pages"]
+    end
+
+    subgraph Live_Production ["5. Live Production"]
+        J --> K["Live Site: hassankhalidkm.github.io/se-assignment-01/"]
+    end
 ```
 
-### Why These Checks?
-- **File presence check** — ensures no developer accidentally deletes a critical file
-- **HTML5 validation** — catches malformed markup that could break the page
-- **JS linting** — catches syntax errors and undefined variable usage before they reach production
+---
+
+## 4. Problems Faced and How They Were Solved
+
+1. **GitHub Actions Linting False Positives (`jshint` configuration):**
+   - *Problem:* Running `jshint` with strict CLI flags flagged browser globals (`localStorage`, `document`) as undefined variables.
+   - *Solution:* Created a dedicated `.jshintrc` configuration file that explicitly defines ES8 environment support and registers browser runtime globals.
+
+2. **Demonstration of CI Failure (Step 9 Requirement):**
+   - *Problem:* Intentionally introducing a syntax error (`var broken = (;`) to break the build, while maintaining ability to restore functionality cleanly.
+   - *Solution:* Created an intentional failure commit (`test: intentional syntax error to demonstrate CI failure`), verified that the GitHub Actions run failed on the lint step, captured evidence, and subsequently pushed a clean fix commit (`fix: restore correct syntax after CI failure demo`).
+
+3. **GitHub Pages Deployment via Actions:**
+   - *Problem:* Default repository settings expected deployment from a branch rather than GitHub Actions artifacts.
+   - *Solution:* Configured repository settings (Pages -> Source -> GitHub Actions) and granted workflow permissions (`pages: write`, `id-token: write`) in `deploy.yml`.
 
 ---
 
-## 4. Break-and-Fix Demonstration
+## 5. What You Learned from Continuous Integration (CI)
 
-### Step A — Deliberate Break
-A syntax error was introduced in `app.js`:
-
-```javascript
-// BROKEN: missing closing parenthesis
-function loadTasks( {
-  var stored = localStorage.getItem(STORAGE_KEY);
-```
-
-This was committed and pushed as:
-> `test: intentional syntax error to demonstrate CI failure`
-
-**Result:** The CI pipeline failed ❌ on the "Lint JavaScript" step.
-
-📸 *[See screenshot: ci_failed.png]*
-
-### Step B — Fix
-The syntax error was corrected and pushed as:
-> `fix: restore correct syntax after CI failure demo`
-
-**Result:** The CI pipeline passed ✅ on all steps.
-
-📸 *[See screenshot: ci_success.png]*
+1. **Automated Quality Gates:** CI guarantees that bad code, broken markup, or syntax errors never reach production unnoticed. Every push is verified automatically in an isolated runner environment.
+2. **Fast Feedback Loop:** Developers receive instant notifications within minutes of pushing code, showing the exact command and line number where a failure occurred.
+3. **Reproducible Environments:** CI workflows run on standardized clean containers (`ubuntu-latest`), eliminating the "it works on my machine" problem.
+4. **Separation of CI and CD:** Clear separation between validating/testing code (CI) and deploying the validated artifact to production hosting (CD).
 
 ---
 
-## 5. GitHub Pages Deployment
+## 6. Required Deliverables & Screenshots
 
-The deployment workflow at `.github/workflows/deploy.yml` runs automatically after every push to `main`. It uses the official GitHub Pages Actions (`configure-pages`, `upload-pages-artifact`, `deploy-pages`) to publish the repository root as a static site.
-
-**Live URL:** https://hassankhalidkm.github.io/se-assignment-01/
-
----
-
-## 6. Screenshots
-
-### Local Application Execution
-![Local Application Execution](../screenshots/app_local.png)
-
-### Git Commit History (3+ Meaningful Commits)
-![Git Commit History](../screenshots/commits.png)
-
-### CI Pipeline Failure (Intentional Error Demonstration)
-![CI Pipeline Failure](../screenshots/ci_failed.png)
-
-### CI Pipeline Success (Fixed Workflow)
-![CI Pipeline Success](../screenshots/ci_success.png)
-
-### GitHub Pages Live Deployment
-![GitHub Pages Live Deployment](../screenshots/pages_live.png)
+### Deliverable Links
+- **GitHub Repository:** [https://github.com/HassanKhalidKM/se-assignment-01](https://github.com/HassanKhalidKM/se-assignment-01)
+- **Live Deployed Application:** [https://hassankhalidkm.github.io/se-assignment-01/](https://hassankhalidkm.github.io/se-assignment-01/)
 
 ---
 
-## 7. Reflection
-
-### New Territory (Steps 6–9)
-GitHub Actions was the genuinely new part of this assignment. Key lessons learned:
-
-1. **YAML indentation matters** — a misplaced space breaks the entire workflow
-2. **Workflow triggers** — `on: push: branches: [main]` vs also triggering on PRs
-3. **Actions marketplace** — using pre-built actions (`checkout@v4`, `setup-node@v4`) avoids rewriting boilerplate
-4. **Reading CI logs** — the collapsed step logs show exactly which command failed and why
-5. **Secrets and permissions** — GitHub Pages deployment requires `permissions: pages: write` in the workflow YAML
-
-### What I Would Add Next
-- Unit tests with Jest (requires a small `package.json`)
-- Code coverage reporting
-- Lighthouse performance audit step
-- Slack/email notifications on failure
+### Screenshot 1: Running Application (Local)
+![Running Application](../screenshots/app_local.png)
 
 ---
 
-*Report submitted as part of SE Assignment 01 — September 2026*
+### Screenshot 2: GitHub Repository Files
+![GitHub Repository Files](../screenshots/repo_files.png)
+
+---
+
+### Screenshot 3: Commit History (3+ Meaningful Commits)
+![Commit History](../screenshots/commits.png)
+
+---
+
+### Screenshot 4: Failed CI Workflow (Intentional Error Demonstration)
+![Failed CI Workflow](../screenshots/ci_failed.png)
+
+---
+
+### Screenshot 5: Successful CI Workflow (Error Resolved)
+![Successful CI Workflow](../screenshots/ci_success.png)
+
+---
+
+### Screenshot 6: Deployed Application (Live on GitHub Pages)
+![Deployed Application](../screenshots/pages_live.png)
